@@ -1,0 +1,43 @@
+<!-- sidebar left start-->
+<html lang="UTF-8"  xmlns:th="http://www.thymeleaf.org">
+
+<div class="sidebar-left" th:fragment="menu-section">
+    <!--responsive view logo start-->
+    <div class="logo dark-logo-bg visible-xs-* visible-sm-*">
+        <a href="dashboard">
+            <img src="/systheme/img/logo-icon.png" alt="">
+            <!--<i class="fa fa-maxcdn"></i>-->
+            <span class="brand-name">听雨轩</span>
+        </a>
+    </div>
+    <!--responsive view logo end-->
+
+    <div class="sidebar-left-info">
+        <!-- visible small devices start-->
+        <div class=" search-field">  </div>
+        <!-- visible small devices end-->
+
+        <!--sidebar nav start-->
+        <ul class="nav nav-pills nav-stacked side-navigation">
+            <li>
+                <h3 class="navigation-title">Navigation</h3>
+            </li>
+            <li><a href="dashboard"><i class="fa fa-home"></i> <span>仪表盘</span></a></li>
+
+            <!-- 遍历菜单 -->
+            <li class="menu-list" th:each="menu : ${session.currentUser.getRootMenu().getSubMenus()}" th:if="${menu.getIsShow() == 'Y'}">
+                <a href=""><i class="fa" th:classappend="${menu.getMenuIcon()}"></i><span th:text="${menu.getMenuName()}">menuName</span></a>
+                <ul class="child-list">
+                    <li th:each="subMenu : ${menu.getSubMenus()}" th:if="${subMenu.getIsShow() == 'Y'}">
+                    <a th:href="${subMenu.getMenuHref()}"  th:name="${subMenu.getMenuHref()}"
+                       th:text="${subMenu.getMenuName()}" onclick="meizz(this)">subMenuName</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+</html>

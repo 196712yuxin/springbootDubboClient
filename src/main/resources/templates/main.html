@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Mosaddek">
+    <meta name="keyword" content="slick, flat, dashboard, bootstrap, admin, template, theme, responsive, fluid, retina">
+    <link rel="shortcut icon" href="javascript:;" type="image/png">
+
+    <title>wisdominfo - Blank Page</title>
+
+    <!--right slidebar-->
+    <link href="/systheme/css/slidebars.css" rel="stylesheet">
+
+    <!--switchery-->
+    <link href="/systheme/js/switchery/switchery.min.css" rel="stylesheet" type="text/css" media="screen" />
+
+    <!--common style-->
+    <link href="/systheme/css/style.css" rel="stylesheet">
+    <link href="/systheme/css/style-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="/systheme/js/html5shiv.js"></script>
+    <script src="/systheme/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="sticky-header">
+
+    <section>
+
+
+
+        <!-- body content start-->
+        <div class="body-content" style="min-height: 1200px;">
+
+            <!-- header section start-->
+            <div th:replace="include/header-section.html::header-section"></div>
+            <!-- header section end-->
+
+            <!-- page head start-->
+            <div class="page-head">
+                <h3>
+                    Dashboard
+                </h3>
+                <span class="sub-title">Welcome to SlickLab dashboard</span>
+                <div class="state-information">
+                    <div class="state-graph">
+                        <div id="balance" class="chart"></div>
+                        <div class="info">Balance $ 2,317</div>
+                    </div>
+                    <div class="state-graph">
+                        <div id="item-sold" class="chart"></div>
+                        <div class="info">Item Sold 1230</div>
+                    </div>
+                </div>
+            </div>
+            <!-- page head end-->
+
+            <!--body wrapper start-->
+            <div class="wrapper">
+
+                body content goes here ..<br>
+                <div th:text="${session.currentUser.getUser().getUsername()}"></div>
+
+            </div>
+            <!--body wrapper end-->
+
+
+            <!--footer section start-->
+            <footer>
+                2017 &copy; WisdomInfo by Liam.
+            </footer>
+            <!--footer section end-->
+
+
+            <!-- Right Slidebar start -->
+            <div th:replace="include/right-slidebar-section.html::right-slidebar-section"></div>
+            <!-- Right Slidebar end -->
+
+        </div>
+        <!-- body content end-->
+        <!-- sidebar left start-->
+        <div th:replace="include/menu-section.html::menu-section"></div>
+        <!-- sidebar left end-->
+    </section>
+<!-- Placed js at the end of the document so the pages load faster -->
+<script src="/systheme/js/jquery.min.js"></script>
+   <script src="/systheme/js/jquery-migrate.js"></script>
+    <script src="/systheme/js/bootstrap.min.js"></script>
+    <script src="/systheme/js/modernizr.min.js"></script>
+
+<!--Nice Scroll-->
+<script src="/systheme/js/jquery.nicescroll.js" type="text/javascript"></script>
+
+<!--right slidebar-->
+<script src="/systheme/js/slidebars.min.js"></script>
+
+<!--switchery-->
+<script src="/systheme/js/switchery/switchery.min.js"></script>
+<script src="/systheme/js/switchery/switchery-init.js"></script>
+
+<!--Sparkline Chart-->
+<script src="/systheme/js/sparkline/jquery.sparkline.js"></script>
+<script src="/systheme/js/sparkline/sparkline-init.js"></script>
+
+
+<!--common scripts for all pages-->
+<script src="/systheme/js/scripts.js"></script>
+    <script>
+        $(document).ready(function(e){
+            $(".bt").click(function () {
+                /*   $("a").attr("href", "http://www.softwhy.com");*/
+                var a=document.querySelector(".sidebar-left").getElementsByTagName("a");
+                console.log(a)
+                for(var i=0;i<a.length;i++){
+                    a[i].setAttribute("href",a[i].name);
+                }
+            })
+
+        });
+
+        function meizz(ee) {
+            var att=document.querySelector(".menu-list").getElementsByTagName("a");
+            var urls="http://"+att.item(0).host+"/"
+            console.log(att.item(0))
+            urls=urls+ee.name;
+            console.log(urls)
+            ee.setAttribute("href",urls);
+        }
+
+    </script>
+
+</body>
+</html>
