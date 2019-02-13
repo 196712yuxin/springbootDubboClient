@@ -68,10 +68,15 @@ public class SysUserController
     @ResponseBody
     @RequestMapping(value={"edit"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
     public Object editPost(@RequestBody SysUser record, HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        SysUser user = WebUtil.getCurrentUser();
+        SysUser user = WebUtil.getCurrentUserByCode();
 
         if ((record.getId() == null) || (record.getId().intValue() == 0)) {
-            boolean pd = WorkStringUtils.regExpPd(record.getPassword());
+            boolean pd=false;
+            if(record.getPassword()!=null) {
+                pd = WorkStringUtils.regExpPd(record.getPassword());
+            }else {
+                pd=false;
+            }
             if (!pd) {
                 return JsonResponseGenerator.fail("添加失败，密码必须包含数字和字母组合，且长度在8到15位之内!");
             }

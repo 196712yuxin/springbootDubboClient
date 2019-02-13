@@ -1,6 +1,9 @@
 package org.spring.springboot.consumer;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.util.BeanUtil;
+import com.google.gson.Gson;
 import org.spring.springboot.annotaction.AuthenticationSupport;
 import org.spring.springboot.annotaction.NoAuthoring;
 import org.spring.springboot.annotaction.PrivilegeSupport;
@@ -11,8 +14,11 @@ import org.spring.springboot.domain.SysUser;
 import org.spring.springboot.domain.UserInfo;
 import org.spring.springboot.dubbo.SysMenuService;
 import org.spring.springboot.dubbo.SysUserService;
+import org.spring.springboot.dubbo.doman.SysUserCook;
+import org.spring.springboot.utils.EncryptUtil;
 import org.spring.springboot.utils.MD5Util;
 import org.spring.springboot.utils.WebUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +26,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.ws.spi.http.HttpContext;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +42,8 @@ import java.util.Map;
 @Controller
 @RequestMapping({"/"})
 public class HomeController extends BaseController {
+
+    private final EncryptUtil utils= EncryptUtil.getInstance();
 
     @Reference(version = "1.0.0",timeout = 30000)
     private SysUserService sysUserService;
@@ -47,7 +60,8 @@ public class HomeController extends BaseController {
     @RequestMapping(value={"/login"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
     @AuthenticationSupport(support=false)
     @PrivilegeSupport(support=false)
-    public ModelAndView loginPost(Model model, HttpServletRequest request, HttpServletResponse response) { String username = request.getParameter("signin_username");
+    public ModelAndView loginPost(Model model, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+        String username = request.getParameter("signin_username");
         String password = request.getParameter("signin_password");
         sysUserService.selectByPrimaryKey(1);
 
@@ -66,6 +80,29 @@ public class HomeController extends BaseController {
             UserInfo userInfo = new UserInfo();
             userInfo.setUser(loginUser);
             findMenus(userInfo);
+            SysUserCook sysUserCook = new SysUserCook();
+            BeanUtils.copyProperties(loginUser, sysUserCook);
+            String userCook= JSON.toJSONString(sysUserCook);
+            String userCook1=sysUserCook.getId()+"";
+/*
+            userCook = userCook.replace(">", "&gt;");
+            userCook = userCook.replace("<", "&lt;");
+            userCook = userCook.replace(" ", "&nbsp;");
+            userCook = userCook.replace("\"", "&quot;");
+            userCook = userCook.replace("\'", "&#39;");
+            userCook = userCook.replace("\\", "\\\\");//对斜线的转义
+            userCook = userCook.replace("\n", "\\n");
+            userCook = userCook.replace("\r", "\\r");*/
+            String md5= MD5Util.md5(userCook);
+/*            EncryptUtil utils= EncryptUtil.getInstance();*/
+            String coo= utils.Base64Encode(userCook);
+            String cok= utils.Base64Decode(coo);
+            URLEncoder.encode(userCook,"UTF-8");
+            Cookie cookie = new Cookie("user", coo);
+            cookie.setMaxAge(15 * 600);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
             request.getSession().setAttribute("currentUser", userInfo);
             mv = new ModelAndView("redirect:/dashboard");
             mv.addObject("username", username);

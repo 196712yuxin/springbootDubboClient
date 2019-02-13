@@ -92,7 +92,7 @@ function format(d) {
         '</tr>' +
         '<tr>' +
         '<td>Phone:</td>' +
-        '<td> + d.cellphone + </td>' +
+        '<td>'+ d.cellphone+'</td>' +
         '</tr>' +
         '</table>';
 }

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="UTF-8" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Mosaddek">
+    <meta name="keyword" content="slick, flat, dashboard, bootstrap, admin, template, theme, responsive, fluid, retina">
+    <link rel="shortcut icon" href="javascript:;" type="image/png">
+
+    <title>wisdominfo</title>
+   <th:block th:include="include/headerinclude.html::headerinclude"></th:block>
+
+</head>
+
+<body class="sticky-header">
+    <section>
+        <!-- sidebar left start-->
+        <div th:replace="include/menu-section.html::menu-section"></div>
+        <!-- sidebar left end-->
+
+
+        <!-- body content start-->
+        <div class="body-content" style="min-height: 1200px;">
+
+            <!-- header section start-->
+            <div th:replace="include/header-section.html::header-section"></div>
+            <!-- header section end-->
+
+            <!-- page head start-->
+            <div class="page-head">
+                <h3>
+                    Dashboarddas
+                </h3>
+            </div>
+            <!-- page head end-->
+
+            <!--body wrapper start-->
+            <div class="wrapper">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <section class="panel">
+                            <header class="panel-heading ">
+                                Row Details Table
+                                <span class="tools pull-right">
+                                    <a class="fa fa-repeat box-refresh" href="javascript:;"></a>
+                                    <a class="t-close fa fa-times" href="javascript:;"></a>
+                                </span>
+                            </header>
+                            <table id="datatable" class="table data-table row-details-data-table" cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <td>username</td>
+                                    <td>dispalyname</td>
+                                    <td>jobnum</td>
+                                    <td>cellphone</td>
+                                    <td></td>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <td>username</td>
+                                    <td>dispalyname</td>
+                                    <td>jobnum</td>
+                                    <td>cellphone</td>
+                                    <td></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <!--body wrapper end-->
+
+            <a class="btn btn-warning" data-toggle="modal" href="#aaa">Large</a>
+
+            <!-- Modal -->
+            <div class="modal fade" id="aaa" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">编辑</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Email address</label>
+                                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Password</label>
+                                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                </div>
+                                <div class="form-group">
+                                    <label>File input</label>
+                                    <input id="file-0" class="file" type="file" multiple=true>
+
+                                    <p class="help-block">Example block-level help text here.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="checkbox-custom check-success">
+                                        <input type="checkbox" value=" " id="checkbox2"> <label for="checkbox2">Check me out</label>
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="btn btn-info">Submit</button>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                            <button class="btn btn-warning" type="button"> Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal -->
+
+
+
+            <!--footer section start-->
+            <footer>
+                2017 &copy; WisdomInfo by Liam.
+            </footer>
+            <!--footer section end-->
+            <!-- Right Slidebar start -->
+            <div th:replace="include/right-slidebar-section.html::right-slidebar-section"></div>
+            <!-- Right Slidebar end -->
+        </div>
+        <!-- body content end-->
+    </section>
+
+<footer th:replace="include/footerjs.html::footerjs"></footer>
+</body>
+<script>
+    $(function () {
+        var columns = [{
+            "class": 'details-control',
+            "orderable": false,
+            "data": null,
+            "defaultContent": ''
+        },{
+            data : 'username',
+            name : 'username'
+        },{
+            data : 'displayName',
+            name : 'display_name'
+        },{
+            data : 'jobnum',
+            name : 'jobnum'
+        },{
+            data : 'cellphone',
+            name : 'cellphone'
+        },{
+            "createdCell": function (td, cellData, rowData, row, col) {
+                $(td).html('<td class="hidden-xs">'+
+                    /*'<button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button>'+*/
+                    '<button class="btn btn-primary btn-xs" onclick="javascript:window.location.href=\'edit?id='+ rowData.id+'\';"><i class="fa fa-pencil"></i></button> '+
+                    '<button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>'+
+                    '</td>');
+            },
+            "orderable":false,
+            "defaultContent": ''
+        }];
+        var search ={
+            username : $("#username").val(),
+            displayName : $("#displayName").val(),
+            email : $("#email").val(),
+            cellphone : $("#cellphone").val(),
+            isLocked : $("#isLocked").val(),
+            address : $("#address").val(),
+            jobnum : $("#jobnum").val(),
+            ipphone : $("#ipphone").val(),
+            gender : $("#gender").val()
+        };
+        // 初始化datatable
+        dataTable.init(columns, search, "list");
+    });
+</script>
+</html>
