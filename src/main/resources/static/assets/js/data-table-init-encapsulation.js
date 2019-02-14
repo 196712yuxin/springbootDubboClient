@@ -80,6 +80,7 @@ var dataTable = {
 
 
 function format(d) {
+    if(d.displayName!=undefined){
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
         '<tr>' +
@@ -95,6 +96,23 @@ function format(d) {
         '<td>'+ d.cellphone+'</td>' +
         '</tr>' +
         '</table>';
+    }
+    if(d.roleName!=undefined){
+        return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+            '<tr>' +
+            '<td>角色名称:</td>' +
+            '<td>' + d.roleName + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>角色描述:</td>' +
+            '<td>' + d.roleDesc + '</td>' +
+            '</tr>' +
+            '<tr>' +
+            '<td>角色代码:</td>' +
+            '<td>'+ d.roleCode+'</td>' +
+            '</tr>' +
+            '</table>';
+    }
 }
 
 $('.convert-data-table').DataTable({

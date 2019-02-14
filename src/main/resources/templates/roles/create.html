@@ -1,0 +1,167 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+
+<html lang="UTF-8" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Jackson">
+    <meta name="keyword" content="slick, flat, dashboard, bootstrap, admin, template, theme, responsive, fluid, retina">
+    <link rel="shortcut icon" href="javascript:;" type="image/png">
+    <title>听雨轩</title>
+    <th:block th:include="include/headerinclude.html::headerinclude"></th:block>
+</head>
+<body class="sticky-header">
+<section>
+    <div th:replace="include/menu-section.html::menu-section"></div>
+    <div class="body-content" style="min-height: 1200px;">
+        <div th:replace="include/header-section.html::header-section"></div>
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            创建角色
+                        </header>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" id="createForm" >
+                                <div class="form-group">
+                                    <label for="username" class="col-lg-1 col-sm-1 control-label">角色名称</label>
+                                    <div class="col-lg-3">
+                                        <input type="text" class="form-control" id="username" name="username" >
+                                        <p class="help-block"></p>
+                                    </div>
+                                    <label for="displayName" class="col-lg-1 col-sm-1 control-label">角色描述</label>
+                                    <div class="col-lg-3">
+                                        <input type="text" class="form-control" id="displayName" name="displayName" >
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="col-lg-1 col-sm-1 control-label">角色代码</label>
+                                    <div class="col-lg-3">
+                                        <input type="text" class="form-control" id="email" name="email">
+                                        <p class="help-block"></p>
+                                    </div>
+                                    <label for="username" class="col-lg-1 col-sm-1 control-label">是否有效</label>
+                                    <div class="col-lg-3">
+                                            <input type="hidden" id="gender" name="gender">
+                                            <input type="radio" name="gender" value="1"  class="iCheck-flat-green" id="sexRadio1" checked>
+                                            <label class="  control-label">有效</label>
+                                            <input type="radio" name="gender" value="0" class="iCheck-flat-green"  id="sexRadio0">
+                                            <label class="  control-label">失效</label>
+                                            <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-3">
+                                        <a type="button" class="btn btn-success m-b-10" id="editForms" onclick="submit()">提交</a>
+                                        <button type="button" class="btn btn-success m-b-10" onclick="javascript:history.back();">返回</button>
+                                        <p class="help-block"></p>
+                                    </div>
+
+                                    <div class="col-lg-3">
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+
+        <footer>
+            2017 &copy; WisdomInfo by Liam.
+        </footer>
+        <div th:replace="include/right-slidebar-section.html::right-slidebar-section"></div>
+        <div th:replace="include/modal-section.html::modal-section"></div>
+    </div>
+</section>
+
+<footer th:replace="include/footerjs.html::footerjs"></footer>
+</body>
+<script>
+    /*性别选择器初始化*/
+    var checkNumber=$("#gender").val();
+    console.log(checkNumber);
+
+    if(checkNumber == 1){
+        $("#sexRadio1").prop("checked",true);
+        $("#sexRadio0").prop("checked",false);
+        $("#sexRadio2").prop("checked",false);
+    }
+    if(checkNumber == 0){
+        $("#sexRadio1").prop("checked",false);
+        $("#sexRadio0").prop("checked",true);
+        $("#sexRadio2").prop("checked",false);
+    }
+    if(checkNumber == 2){
+        $("#sexRadio1").prop("checked",false);
+        $("#sexRadio2").prop("checked",true);
+        $("#sexRadio0").prop("checked",false);
+    }
+</script>
+<script>
+   function submit(){
+       var  numberId =  Number($("#id").val());
+       var lastLoginTime1 = (new Date($("#lastLoginTime").val())).getTime();
+       var lastLoginTime2 = new Date(lastLoginTime1);
+
+       var createdTime1 = (new Date($("#createdTime").val())).getTime();
+       var createdTime2 = new Date(createdTime1);
+
+        var record={
+            id:numberId,
+            username:$("#username").val(),
+            email:$("#email").val(),
+            cellphone:$("#cellphone").val(),
+            lastLoginTime:lastLoginTime2,
+            lastLoginIp:$("#lastLoginIp").val(),
+            address:$("#address").val(),
+            jobnum:$("#jobnum").val(),
+            gender:$("input[name='gender']:checked").val(),
+            createdBy:$("#createdBy").val(),
+            createdTime:createdTime2
+        };
+        var formData = new FormData($('#editForm')[0]);
+        $.ajax({
+            "url": "edit",
+            "type": "post",
+            "data": JSON.stringify(record),
+            "contentType": "application/json",
+            "dataType": "json"
+        }).done(function (data) {
+            if (data.success){
+                alert("修改成功，点击确定继续")
+            } else {
+              alert("修改失败");
+            }
+        }).fail(function () {
+            alert("修改失败");
+        });
+    }
+   Date.prototype.format = function(fmt) {
+       var o = {
+           "M+" : this.getMonth()+1,                 //月份
+           "d+" : this.getDate(),                    //日
+           "h+" : this.getHours(),                   //小时
+           "m+" : this.getMinutes(),                 //分
+           "s+" : this.getSeconds(),                 //秒
+           "q+" : Math.floor((this.getMonth()+3)/3), //季度
+           "S"  : this.getMilliseconds()             //毫秒
+       };
+       if(/(y+)/.test(fmt)) {
+           fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+       }
+       for(var k in o) {
+           if(new RegExp("("+ k +")").test(fmt)){
+               fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+           }
+       }
+       return fmt;
+   }
+</script>
+</html>

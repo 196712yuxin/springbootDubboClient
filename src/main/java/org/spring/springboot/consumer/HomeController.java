@@ -84,15 +84,6 @@ public class HomeController extends BaseController {
             BeanUtils.copyProperties(loginUser, sysUserCook);
             String userCook= JSON.toJSONString(sysUserCook);
             String userCook1=sysUserCook.getId()+"";
-/*
-            userCook = userCook.replace(">", "&gt;");
-            userCook = userCook.replace("<", "&lt;");
-            userCook = userCook.replace(" ", "&nbsp;");
-            userCook = userCook.replace("\"", "&quot;");
-            userCook = userCook.replace("\'", "&#39;");
-            userCook = userCook.replace("\\", "\\\\");//对斜线的转义
-            userCook = userCook.replace("\n", "\\n");
-            userCook = userCook.replace("\r", "\\r");*/
             String md5= MD5Util.md5(userCook);
 /*            EncryptUtil utils= EncryptUtil.getInstance();*/
             String coo= utils.Base64Encode(userCook);
