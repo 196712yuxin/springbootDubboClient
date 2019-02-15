@@ -1,15 +1,14 @@
 package org.spring.springboot.consumer;
 
-import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.github.pagehelper.PageHelper;
 import org.spring.springboot.domain.PagerQuery;
 import org.spring.springboot.domain.SysRole;
 import org.spring.springboot.domain.SysUser;
 import org.spring.springboot.dubbo.SysRoleService;
-import org.spring.springboot.dubbo.SysUserService;
+import org.spring.springboot.response.SysRoleCreateResponse;
+import org.spring.springboot.response.SysRoleDeleteResponse;
 import org.spring.springboot.response.SysRoleFindResponse;
-import org.spring.springboot.response.SysUserFindResponse;
+import org.spring.springboot.response.SysRoleUpdateResponse;
 import org.spring.springboot.utils.JsonResponseGenerator;
 import org.spring.springboot.utils.WebUtil;
 import org.springframework.stereotype.Component;
@@ -21,10 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Controller
@@ -33,6 +29,8 @@ public class RolesController {
 
     @Reference(version = "1.0.0",timeout = 30000)
     private SysRoleService sysRoleService;
+
+
 
     @RequestMapping(value={"index"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     public ModelAndView listGet(HttpServletRequest request, HttpServletResponse response)
@@ -65,14 +63,68 @@ public class RolesController {
     @ResponseBody
     @RequestMapping(value={"creat"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
     public Object creatPost(@RequestBody SysRole sysRole, HttpServletRequest request, HttpServletResponse response) {
+        SysRoleCreateResponse sysRoleCreateResponse = new SysRoleCreateResponse();
         SysUser user = WebUtil.getCurrentUserByCode();
         sysRole.setCreatedBy(user.getId());
-        if(sysRoleService.creatRole(sysRole)==1){
-         return JsonResponseGenerator.success("添加成功!");
-     }else{
-         return JsonResponseGenerator.fail("名称已经存在!");
-     }
-
+        sysRoleCreateResponse = sysRoleService.creatRole(sysRole);
+        if(sysRoleCreateResponse.hasError()){
+            return JsonResponseGenerator.fail(sysRoleCreateResponse.getErrors().get(0).getMessage());
+        }else {
+            if(1 == sysRoleCreateResponse.getResult()){
+                return JsonResponseGenerator.success("添加成功!");
+            }else{
+                return JsonResponseGenerator.fail("添加失败!");
+            }
+        }
+    }
+    @RequestMapping(value={"delete"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    public ModelAndView deleteGet(Integer id, HttpServletRequest request, HttpServletResponse response)
+    {
+        SysRole sysRole = sysRoleService.getById(id);
+        ModelAndView mv = new ModelAndView("roles/delete");
+        mv.addObject("sysRole", sysRole);
+        return mv;
+    }
+    @ResponseBody
+    @RequestMapping(value={"delete"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    public Object delete(@RequestBody int id, HttpServletRequest request, HttpServletResponse response) {
+        SysRoleDeleteResponse sysRoleDeleteResponse=new SysRoleDeleteResponse();
+        sysRoleDeleteResponse = sysRoleService.deleteById(id);
+        if(sysRoleDeleteResponse.hasError()){
+            return JsonResponseGenerator.fail("删除失败!"+sysRoleDeleteResponse.getErrors().get(0).getMessage());
+        }else {
+            if(sysRoleDeleteResponse.getResult()==1){
+                return JsonResponseGenerator.success("删除成功!");
+            } else {
+                return JsonResponseGenerator.fail("删除失败!");
+            }
+        }
     }
 
+    @RequestMapping(value={"edit"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    public ModelAndView editGet(Integer id, HttpServletRequest request, HttpServletResponse response)
+    {
+        SysRole sysRole = sysRoleService.getById(id);
+        ModelAndView mv = new ModelAndView("roles/edit");
+        mv.addObject("sysRole", sysRole);
+        return mv;
+    }
+    @ResponseBody
+    @RequestMapping(value={"edit"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    public Object editPost(@RequestBody SysRole sysRole, HttpServletRequest request, HttpServletResponse response) {
+        SysRoleUpdateResponse sysRoleUpdateResponse = new SysRoleUpdateResponse();
+        sysRole.setLastUpdatedTime(new Date());
+        SysUser user = WebUtil.getCurrentUserByCode();
+        sysRole.setLastUpdatedBy(user.getId());
+        sysRoleUpdateResponse = sysRoleService.updateRole(sysRole);
+        if(sysRoleUpdateResponse.hasError()){
+            return JsonResponseGenerator.fail("修改失败!"+sysRoleUpdateResponse.getErrors().get(0).getMessage());
+        }else {
+            if(sysRoleUpdateResponse.getResult()==1){
+                return JsonResponseGenerator.success("修改成功!");
+            } else {
+                return JsonResponseGenerator.fail("修改失败!");
+            }
+        }
+    }
 }

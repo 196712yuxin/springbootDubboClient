@@ -136,6 +136,7 @@
 
 <footer th:replace="include/footerjs.html::footerjs"></footer>
 </body>
+
 <script>
     $(function () {
         var columns = [{
@@ -159,8 +160,9 @@
             "createdCell": function (td, cellData, rowData, row, col) {
                 $(td).html('<td class="hidden-xs">'+
                    /* '<button class="btn btn-success btn-xs" onclick="javascript:window.location.href=\'create\';"><i class="fa fa-check"></i></button>'+*/
+              /*      <a type="button" class="btn btn-success m-b-10" id="createForms" onclick="submit()">提交</a>*/
                     '<button class="btn btn-primary btn-xs" onclick="javascript:window.location.href=\'edit?id='+ rowData.id+'\';"><i class="fa fa-pencil"></i></button> '+
-                    '<button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>'+
+                    '<button class="btn btn-danger btn-xs"  onclick="javascript:window.location.href=\'delete?id='+ rowData.id+'\';"><i class="fa fa-trash-o"></i></button>'+
                     '</td>');
             },
             "orderable":false,

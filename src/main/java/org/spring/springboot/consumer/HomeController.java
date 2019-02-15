@@ -84,10 +84,7 @@ public class HomeController extends BaseController {
             BeanUtils.copyProperties(loginUser, sysUserCook);
             String userCook= JSON.toJSONString(sysUserCook);
             String userCook1=sysUserCook.getId()+"";
-            String md5= MD5Util.md5(userCook);
-/*            EncryptUtil utils= EncryptUtil.getInstance();*/
             String coo= utils.Base64Encode(userCook);
-            String cok= utils.Base64Decode(coo);
             URLEncoder.encode(userCook,"UTF-8");
             Cookie cookie = new Cookie("user", coo);
             cookie.setMaxAge(15 * 600);

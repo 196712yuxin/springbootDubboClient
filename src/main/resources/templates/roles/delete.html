@@ -22,41 +22,46 @@
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            创建角色
+                            删除角色
                         </header>
                         <div class="panel-body">
                             <form class="form-horizontal" role="form" id="createForm" >
+                                <input type="hidden" id="id" name="id" th:value="${sysRole.id}">
                                 <div class="form-group">
                                     <label for="roleName" class="col-lg-1 col-sm-1 control-label">角色名称</label>
                                     <div class="col-lg-3">
-                                        <input type="text" class="form-control" id="roleName" name="roleName" >
+                                        <input type="text" class="form-control" id="roleName" name="roleName"
+                                               disabled="disabled"   th:value="${sysRole.roleName}"  placeholder="roleName">
                                         <p class="help-block"></p>
                                     </div>
                                     <label for="roleDesc" class="col-lg-1 col-sm-1 control-label">角色描述</label>
                                     <div class="col-lg-3">
-                                        <input type="text" class="form-control" id="roleDesc" name="roleDesc" >
+                                        <input type="text" class="form-control" id="roleDesc" name="roleDesc"
+                                               disabled="disabled"   th:value="${sysRole.roleDesc}">
                                         <p class="help-block"></p>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="roleCode" class="col-lg-1 col-sm-1 control-label">角色代码</label>
                                     <div class="col-lg-3">
-                                        <input type="text" class="form-control" id="roleCode" name="roleCode">
+                                        <input type="text" class="form-control" id="roleCode" name="roleCode"
+                                               disabled="disabled"   th:value="${sysRole.roleCode}">
                                         <p class="help-block"></p>
                                     </div>
                                     <label for="isActive" class="col-lg-1 col-sm-1 control-label">是否有效</label>
                                     <div class="col-lg-3">
-                                            <input type="hidden" id="isActive" name="isActive">
-                                            <input type="radio" name="isActive" value="y"  class="iCheck-flat-green" id="sexRadio1" checked>
-                                            <label class="  control-label">有效</label>
-                                            <input type="radio" name="isActive" value="n" class="iCheck-flat-green"  id="sexRadio0">
-                                            <label class="  control-label">失效</label>
+                                            <input type="hidden" id="isActive" name="isActive"
+                                                   disabled="disabled"   th:value="${sysRole.isActive}">
+
+                                            <label class="control-label" id="isy">有效</label>
+
+                                            <label class="control-label" id="isn">失效</label>
                                             <p class="help-block"></p>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-lg-3">
-                                        <a type="button" class="btn btn-success m-b-10" id="createForms" onclick="submit()">提交</a>
+                                        <a type="button" class="btn btn-success m-b-10" id="createForms" onclick="submit()">删除</a>
                                         <button type="button" class="btn btn-success m-b-10" onclick="javascript:history.back();">返回</button>
                                         <p class="help-block"></p>
                                     </div>
@@ -83,30 +88,38 @@
 
 <footer th:replace="include/footerjs.html::footerjs"></footer>
 </body>
+<script>
+    /*选择器初始化*/
+    var checkNumber=$("#isActive").val();
+    console.log(checkNumber);
 
+    if(checkNumber == "y"){
+        $("#isn").hide();
+        $("#isy").show();
+    }else {
+        $("#isn").show();
+        $("#isy").hide();
+    }
+
+</script>
 <script>
    function submit(){
-        var sysRole={
-            roleName:$("#roleName").val(),
-            roleDesc:$("#roleDesc").val(),
-            roleCode:$("#roleCode").val(),
-            isActive:$("input[name='isActive']:checked").val(),
-        };
+       var  id =  Number($("#id").val());
         $.ajax({
-            "url": "creat",
+            "url": "delete",
             "type": "post",
-            "data": JSON.stringify(sysRole),
+            "data": JSON.stringify(id),
             "contentType": "application/json",
             "dataType": "json"
         }).done(function (data) {
             if (data.success){
-                alert("创建成功");
+                alert("删除成功");
                 window.location.href="index";
             } else {
-              alert("创建失败");
+              alert("删除失败");
             }
         }).fail(function (data) {
-            alert("创建失败");
+            alert("删除失败");
         });
     }
 </script>
