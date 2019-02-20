@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="UTF-8" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Mosaddek">
+    <meta name="keyword" content="slick, flat, dashboard, bootstrap, admin, template, theme, responsive, fluid, retina">
+    <link rel="shortcut icon" href="javascript:;" type="image/png">
+
+    <title>听雨轩</title>
+   <th:block th:include="include/headerinclude.html::headerinclude"></th:block>
+
+</head>
+
+<body class="sticky-header">
+    <section>
+        <!-- sidebar left start-->
+        <div th:replace="include/menu-section.html::menu-section"></div>
+        <!-- sidebar left end-->
+
+
+        <!-- body content start-->
+        <div class="body-content" style="min-height: 1200px;">
+
+            <!-- header section start-->
+            <div th:replace="include/header-section.html::header-section"></div>
+            <!-- header section end-->
+
+            <!-- page head start-->
+            <div class="page-head">
+                <h3>
+                    菜单管理
+                </h3>
+            </div>
+            <!-- page head end-->
+
+            <!--body wrapper start-->
+            <div class="wrapper" style="background-color: black">
+                <!-- 遍历菜单 -->
+                <ul class="nav nav-pills nav-stacked side-navigation" style="background-color: black">
+                <li class="menu-list" th:each="menu : ${session.currentUser.getRootMenu().getSubMenus()}" th:if="${menu.getIsShow() == 'Y'}">
+                    <a href="" style="">
+                        <i class="fa" th:classappend="${menu.getMenuIcon()}"></i>
+                        <span th:text="${menu.getMenuName()}">menuName</span>
+                    </a>
+                    <ul class="child-list">
+                        <button style="margin-left: 10%" class="btn btn-primary btn-xs"
+                                th:name="${menu.getId()}" th:date="${menu.getId()}"
+                                onclick="edit(this)">
+                            <i class="fa fa-pencil" style="margin-right: 1px"></i></button>
+                        <button class="btn btn-danger btn-xs"  style="margin-left: 10%" th:date="${menu.getId()}"
+                                th:name="${menu.getId()}" onclick="delet(this)">
+                            <i class="fa fa-trash-o" style="margin-right: 1px"></i>
+                        </button>
+                        <button class="btn btn-send btn-xs"  style="margin-left: 10%" th:data="${menu.getId()}"
+                                th:name="${menu.getId()}" onclick="create(this)">
+                            <i class="fa glyphicon-plus" style="margin-right: 1px"></i>
+                        </button>
+                        <li th:each="subMenu : ${menu.getSubMenus()}" th:if="${subMenu.getIsShow() == 'Y'}">
+                            <a th:name="${subMenu.getMenuHref()}"
+                               th:text="${subMenu.getMenuName()}"
+                               href ="javascript:return false;" onclick="return false;">subMenuName</a>
+                            <button style="margin-left: 10%" class="btn btn-primary btn-xs"
+                                    th:name="${menu.getId()}" th:data="${menu.getId()}"
+                                    onclick="edit(this)">
+                                <i class="fa fa-pencil" style="margin-right: 1px"></i></button>
+                            <button class="btn btn-danger btn-xs"  style="margin-left: 10%"
+                                  th:data="${menu.getId()}"  th:name="${menu.getId()}" onclick="delet(this)">
+                                <i class="fa fa-trash-o" style="margin-right: 1px"></i>
+                            </button>
+                            <button class="btn btn-send btn-xs"  style="margin-left: 10%" th:data="${menu.getId()}"
+                                    th:name="${menu.getId()}" onclick="create(this)">
+                                <i class="fa glyphicon-plus" style="margin-right: 1px"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </li>
+                </ul>
+            </div>
+            <!--body wrapper end-->
+
+            <!--footer section start-->
+            <footer>
+                2017 &copy; WisdomInfo by Liam.
+            </footer>
+            <!--footer section end-->
+            <!-- Right Slidebar start -->
+            <div th:replace="include/right-slidebar-section.html::right-slidebar-section"></div>
+            <!-- Right Slidebar end -->
+        </div>
+        <!-- body content end-->
+    </section>
+
+<footer th:replace="include/footerjs.html::footerjs"></footer>
+</body>
+
+<script>
+    function edit(ee) {
+        console.log(ee);
+        window.location.href="edit?id="+ee.name;
+    };
+    function delet(ee) {
+        console.log(ee);
+        console.log(ee.date);
+     window.location.href="delete?id="+ee.name;
+    };
+    function create(ee) {
+        console.log(ee);
+        window.location.href="create?id="+ee.name;
+    }
+</script>
+</html>

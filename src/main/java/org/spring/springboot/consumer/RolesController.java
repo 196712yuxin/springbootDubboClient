@@ -1,14 +1,11 @@
 package org.spring.springboot.consumer;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import org.spring.springboot.domain.PagerQuery;
-import org.spring.springboot.domain.SysRole;
-import org.spring.springboot.domain.SysUser;
+import org.spring.springboot.domain.*;
+import org.spring.springboot.dubbo.SysMenuService;
+import org.spring.springboot.dubbo.SysRoleMenuService;
 import org.spring.springboot.dubbo.SysRoleService;
-import org.spring.springboot.response.SysRoleCreateResponse;
-import org.spring.springboot.response.SysRoleDeleteResponse;
-import org.spring.springboot.response.SysRoleFindResponse;
-import org.spring.springboot.response.SysRoleUpdateResponse;
+import org.spring.springboot.response.*;
 import org.spring.springboot.utils.JsonResponseGenerator;
 import org.spring.springboot.utils.WebUtil;
 import org.springframework.stereotype.Component;
@@ -30,7 +27,11 @@ public class RolesController {
     @Reference(version = "1.0.0",timeout = 30000)
     private SysRoleService sysRoleService;
 
+    @Reference(version = "1.0.0",timeout = 30000)
+    private SysRoleMenuService sysRoleMenuService;
 
+    @Reference(version = "1.0.0",timeout = 30000)
+    private SysMenuService sysMenuService;
 
     @RequestMapping(value={"index"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
     public ModelAndView listGet(HttpServletRequest request, HttpServletResponse response)
@@ -48,7 +49,7 @@ public class RolesController {
         if(sysRoleFindResponse!=null){
             list = sysRoleFindResponse.getResult();
         }
-        Map map = new HashMap();
+        Map<String ,Object> map = new HashMap();
         map.put("recordsTotal",sysRoleFindResponse.getTotalCount() );
         map.put("recordsFiltered", sysRoleFindResponse.getTotalCount());
         map.put("data", list.toArray());
@@ -124,6 +125,65 @@ public class RolesController {
                 return JsonResponseGenerator.success("修改成功!");
             } else {
                 return JsonResponseGenerator.fail("修改失败!");
+            }
+        }
+    }
+
+    @RequestMapping(value={"rolemenulist"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    public ModelAndView roleMenuGet(Integer id, HttpServletRequest request, HttpServletResponse response) {
+        SysRole sysRole = sysRoleService.getById(id);
+        ModelAndView mv = new ModelAndView("roles/roleMenu");
+        mv.addObject("sysRole", sysRole);
+        return mv;
+    }
+    @ResponseBody
+    @RequestMapping(value={"rolemenulist"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    public Object roleMenuPost(@RequestBody  PagerQuery<SysRoleMenu> search, HttpServletRequest request, HttpServletResponse response) {
+        SysRoleMenuFindResponse sysRoleMenuFindResponse = new SysRoleMenuFindResponse();
+        sysRoleMenuFindResponse = sysRoleMenuService.findRoleMenu(search);
+        List<SysRoleMenuResponse> list = new ArrayList<>();
+        if(sysRoleMenuFindResponse!=null){
+            list = sysRoleMenuFindResponse.getResult();
+        }
+        Map<String ,Object> map = new HashMap();
+        map.put("recordsTotal",sysRoleMenuFindResponse.getTotalCount() );
+        map.put("recordsFiltered", sysRoleMenuFindResponse.getTotalCount());
+        map.put("data", list.toArray());
+        return map;
+    }
+
+    @ResponseBody
+    @RequestMapping(value={"selectmenulist"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    public Object roleMenuPost(@RequestBody  Integer id, HttpServletRequest request, HttpServletResponse response) {
+        SysMenuFindResponse sysMenuFindResponse = new SysMenuFindResponse();
+        sysMenuFindResponse = sysMenuService.getMenuList(id);
+        List<SysMenu> list = new ArrayList<>();
+        if(sysMenuFindResponse!=null){
+            list = sysMenuFindResponse.getResult();
+        }
+        Map<String ,Object> map = new HashMap();
+        map.put("recordsTotal",sysMenuFindResponse.getTotalCount() );
+        map.put("recordsFiltered", sysMenuFindResponse.getTotalCount());
+        map.put("data", list.toArray());
+        map.put("success", "success");
+        return map;
+    }
+
+    @ResponseBody
+    @RequestMapping(value={"creatRoleMenu"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    public Object creatRomeMenuPost(@RequestBody SysRoleMenu sysRoleMenu, HttpServletRequest request, HttpServletResponse response) {
+        SysRoleMenuCreateResponse CreateResponse  = new SysRoleMenuCreateResponse();
+        SysUser user = WebUtil.getCurrentUserByCode();
+        sysRoleMenu.setCreatedBy(user.getId());
+        sysRoleMenu.setCreatedTime(new Date());
+        CreateResponse= sysRoleMenuService.createRoleMenu(sysRoleMenu);
+        if(CreateResponse.hasError()){
+            return JsonResponseGenerator.fail(CreateResponse.getErrors().get(0).getMessage());
+        }else {
+            if(1 == CreateResponse.getResult()){
+                return JsonResponseGenerator.success("添加成功!");
+            }else{
+                return JsonResponseGenerator.fail("添加失败!");
             }
         }
     }

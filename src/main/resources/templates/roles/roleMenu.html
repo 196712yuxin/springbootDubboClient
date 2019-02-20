@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="UTF-8" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Mosaddek">
+    <meta name="keyword" content="slick, flat, dashboard, bootstrap, admin, template, theme, responsive, fluid, retina">
+    <link rel="shortcut icon" href="javascript:;" type="image/png">
+    <link href="/systheme/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/systheme/css/font-awesome.css" rel="stylesheet">
+    <link href="/systheme/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="/utlis/selectpage/selectpage.css" type="text/css">
+
+    <title>听雨轩</title>
+   <th:block th:include="include/headerinclude.html::headerinclude"></th:block>
+
+</head>
+
+<body class="sticky-header">
+
+    <section>
+        <!-- sidebar left start-->
+        <div th:replace="include/menu-section.html::menu-section"></div>
+        <!-- sidebar left end-->
+
+
+        <!-- body content start-->
+        <div class="body-content" style="min-height: 1200px;">
+
+            <!-- header section start-->
+            <div th:replace="include/header-section.html::header-section"></div>
+            <!-- header section end-->
+
+            <!-- page head start-->
+            <div class="page-head">
+                <h3>
+                    角色权限管理
+                </h3>
+            </div>
+            <!-- page head end-->
+            <input type="hidden" id="sysRoleid" name="sysRoleid" th:value="${sysRole.id}">
+            <!--body wrapper start-->
+            <div class="wrapper">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <section class="panel">
+                            <header class="panel-heading ">
+                                权限——目录 列表
+                                <span class="tools pull-right">
+                             <!--       <a class="fa fa-repeat box-refresh" href="javascript:;"></a>-->
+                                 <a class="btn add-btn btn-success" data-toggle="modal" href="#aaa">添加</a>
+                                </span>
+                            </header>
+                            <table id="datatable" class="table data-table row-details-data-table" cellspacing="0" width="100%">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <td>目录名称</td>
+                                    <td>目录描述</td>
+                                    <td>目录地址</td>
+                                    <td>是否有效</td>
+                                    <td></td>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th></th>
+                                    <td>目录名称</td>
+                                    <td>目录描述</td>
+                                    <td>目录地址</td>
+                                    <td>是否有效</td>
+                                    <td></td>
+                                </tr>
+                                </tfoot>
+                            </table>
+<!--                            <input type="text" class="" id="selectPage" >-->
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <!--body wrapper end-->
+
+            <!-- Modal -->
+            <div class="modal fade" id="aaa" style="" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">菜单选择</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form">
+                         <!--       <div class='form-group'>
+                                    <select class="form-control " id="letterCd"
+                                            name="letterCd"></select>
+                                </div>-->
+                                <div class="form-group" style="width: 300px">
+                                    <label>选择绑定的菜单</label>
+                                    <input type="text" style="width: 100%" class="" id="selectPage" >
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="modal-footer">
+                            <a type="submit" class="btn btn-info" onclick="select()">Submit</a>
+                            <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal -->
+
+            <!--footer section start-->
+            <footer>
+                2017 &copy; WisdomInfo by Liam.
+            </footer>
+            <!--footer section end-->
+            <!-- Right Slidebar start -->
+            <div th:replace="include/right-slidebar-section.html::right-slidebar-section"></div>
+            <!-- Right Slidebar end -->
+        </div>
+        <!-- body content end-->
+    </section>
+
+<footer th:replace="include/footerjs.html::footerjs"></footer>
+</body>
+<script type="text/javascript" src="/utlis/selectpage/selectpage.js" ></script>
+<script type="text/javascript" src="/utlis/selectpage/selectpage.min.js" ></script>
+<script>
+    var selectData=[];
+
+    $(document).ready(function() {
+            getSmsModelName();
+    });
+    //加载信函模板代码【因为其他页面也用了这个JS，所以需要点击时加载】
+    function getSmsModelName() {
+        var html;
+        var id= $("#sysRoleid").val();
+        $.ajax({
+            "url": "selectmenulist",
+            "type": "post",
+            "data": JSON.stringify(id),
+            "contentType": "application/json",
+            "dataType": "json"
+        }).done(function (data) {
+            console.log(data);
+            console.log(data.data);
+            var list=data.data;
+            if (data.success){
+                html += "<option value = ''> - - 请选择 - - </option>";
+                for (var i = 0; i < list.length; i++) {
+                    var select={
+                        id:"",
+                        name:"",
+                        desc:""
+                    }
+                    select.id=list[i].id;
+                    select.name=list[i].menuName;
+                    if(list[i].menuHref){
+                        select.desc=list[i].menuName+"("+list[i].menuHref+")";
+                    }else {
+                        select.desc=list[i].menuName;
+                    }
+                    html += "<option value='"+ list[i].menuName+ "'>" + list[i].menuName+
+                          "</option>";
+                    selectData.push(select);
+                }
+                $("#letterCd").html(html);
+            }
+        }).fail(function (data) {
+            alert(data.message);
+        });
+    }
+/*    var tag_data = [
+        {id:1 ,name:'Chicago Bulls',desc:'芝加哥公牛'},
+        {id:2 ,name:'Cleveland Cavaliers',desc:'克里夫兰骑士'},
+        {id:3 ,name:'Detroit Pistons',desc:'底特律活塞'},
+        {id:4 ,name:'Indiana Pacers',desc:'印第安纳步行者'}
+    ];*/
+    //初始化插件
+    var selectpage =$('#selectPage').selectPage({
+        showField : 'desc',
+        keyField : 'id',
+        data : selectData
+    });
+    var option={
+        listSize:10
+    }
+</script>
+<script>
+    $(function () {
+        var columns = [{
+            "class": 'details-control',
+            "orderable": false,
+            "data": null,
+            "defaultContent": ''
+        },{
+            data : 'menuName',
+            name : 'menuName'
+        },{
+            data : 'menuDesc',
+            name : 'menuDesc'
+        },{
+            data : 'menuHref',
+            name : 'menuHref'
+        },{
+            data : 'isActive',
+            name : 'isActive'
+        },{
+            "createdCell": function (td, cellData, rowData, row, col) {
+                $(td).html('<td class="hidden-xs">'+
+                   /* '<button class="btn btn-success btn-xs" onclick="javascript:window.location.href=\'create\';"><i class="fa fa-check"></i></button>'+*/
+              /*      <a type="button" class="btn btn-success m-b-10" id="createForms" onclick="submit()">提交</a>*/
+                   /* '<button class="btn btn-primary btn-xs" onclick="javascript:window.location.href=\'edit?id='+ rowData.id+'\';"><i class="fa fa-pencil"></i></button> '+*/
+                    '<button class="btn btn-danger btn-xs"  onclick="javascript:window.location.href=\'delete?id='+ rowData.id+'\';"><i class="fa fa-trash-o"></i></button>'+
+                    '</td>');
+            },
+            "orderable":false,
+            "defaultContent": ''
+        }];
+        var search ={
+            id : $("#sysRoleid").val(),
+        };
+        // 初始化datatable
+        dataTable.init(columns, search, "rolemenulist");
+    });
+</script>
+<script>
+    function select(){
+        var sysRoleMenu={
+            menuId:$("#selectPage").val(),
+            roleId:$("#sysRoleid").val(),
+            isActive :"Y"
+        };
+        $.ajax({
+            "url": "creatRoleMenu",
+            "type": "post",
+            "data": JSON.stringify(sysRoleMenu),
+            "contentType": "application/json",
+            "dataType": "json"
+        }).done(function (data) {
+            if (data.success){
+                alert("修改成功");
+                window.location.href="index";
+            } else {
+                alert(data.message);
+            }
+        }).fail(function (data) {
+            alert(data.message);
+        });
+    }
+</script>
+</html>

@@ -62,7 +62,7 @@
                                 <div class="form-group">
                                     <div class="col-lg-3">
                                         <a type="button" class="btn btn-success m-b-10" id="createForms" onclick="submit()">提交</a>
-                                        <button type="button" class="btn btn-success m-b-10" onclick="javascript:history.back();">角色权限</button>
+                                        <button type="button" class="btn btn-success m-b-10" onclick="submitMenu()">角色权限</button>
                                         <button type="button" class="btn btn-success m-b-10" onclick="javascript:history.back();">返回</button>
                                         <p class="help-block"></p>
                                     </div>
@@ -89,6 +89,14 @@
 
 <footer th:replace="include/footerjs.html::footerjs"></footer>
 </body>
+<script>
+    function submitMenu() {
+    /*选择器初始化*/
+    var id=$("#id").val();
+    console.log(checkNumber);
+    window.location.href="rolemenulist?id="+id;
+    }
+</script>
 <script>
     /*选择器初始化*/
     var checkNumber=$("#isActive").val();

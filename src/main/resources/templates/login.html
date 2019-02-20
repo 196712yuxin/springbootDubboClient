@@ -30,6 +30,7 @@
       <div class="container log-row">
           <form class="form-signin" action="login" method="post">
               <div class="login-wrap">
+                  <input type="hidden" name="errmsg" id="errmsg"  class="form-control"  placeholder="errmsg">
                   <input type="text" name="signin_username" id="signin_username" class="form-control" placeholder="用户" autofocus>
                   <input type="password" name="signin_password" id="signin_password" class="form-control" placeholder="密码">
                   <button class="btn btn-lg btn-success btn-block" type="submit" <!--onclick="login()"-->>LOGIN</button>
@@ -98,6 +99,26 @@
               location.href="main";
 
           }
+          var mes=getQueryVariable("errmsg");
+          var errmsgs=decodeURI(mes)
+          console.log(errmsgs);
+          var input = document.getElementById("errmsg");
+          input.value=errmsgs;
+          if(errmsgs!="false"){
+              alert(errmsgs)
+              location.href="login";
+          }
+          function getQueryVariable(variable)
+          {
+              var query = window.location.search.substring(1);
+              var vars = query.split("&");
+              for (var i=0;i<vars.length;i++) {
+                  var pair = vars[i].split("=");
+                  if(pair[0] == variable){return pair[1];}
+              }
+              return(false);
+          }
+
       </script>
   </body>
 </html>

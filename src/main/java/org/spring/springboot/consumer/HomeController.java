@@ -68,7 +68,8 @@ public class HomeController extends BaseController {
         ErrorStatus status = new ErrorStatus();
         String ss=WebUtil.getRemortIP(request);
         Map mapLoginUser = this.sysUserService.login(username, MD5Util.md5(password), ss, status);
-
+        status.setErrorCode((int)mapLoginUser.get("code"));
+        status.setErrorMessage((String)mapLoginUser.get("msg"));
         ModelAndView mv = new ModelAndView();
         if (status.getErrorCode() == -4) {
             mv = new ModelAndView("redirect:/changepwd");
@@ -77,28 +78,31 @@ public class HomeController extends BaseController {
         }
         if (mapLoginUser != null) {
             SysUser loginUser = (SysUser)mapLoginUser.get("domain");
-            UserInfo userInfo = new UserInfo();
-            userInfo.setUser(loginUser);
-            findMenus(userInfo);
-            SysUserCook sysUserCook = new SysUserCook();
-            BeanUtils.copyProperties(loginUser, sysUserCook);
-            String userCook= JSON.toJSONString(sysUserCook);
-            String userCook1=sysUserCook.getId()+"";
-            String coo= utils.Base64Encode(userCook);
-            URLEncoder.encode(userCook,"UTF-8");
-            Cookie cookie = new Cookie("user", coo);
-            cookie.setMaxAge(15 * 600);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-
-            request.getSession().setAttribute("currentUser", userInfo);
-            mv = new ModelAndView("redirect:/dashboard");
-            mv.addObject("username", username);
-            return modelAndView(mv, request, response);
+            if(loginUser !=null) {
+                UserInfo userInfo = new UserInfo();
+                userInfo.setUser(loginUser);
+                findMenus(userInfo);
+                SysUserCook sysUserCook = new SysUserCook();
+                BeanUtils.copyProperties(loginUser, sysUserCook);
+                String userCook = JSON.toJSONString(sysUserCook);
+                String userCook1 = sysUserCook.getId() + "";
+                String coo = utils.Base64Encode(userCook);
+                URLEncoder.encode(userCook, "UTF-8");
+                Cookie cookie = new Cookie("user", coo);
+                cookie.setMaxAge(15 * 600);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                request.getSession().setAttribute("currentUser", userInfo);
+                mv = new ModelAndView("redirect:/dashboard");
+                mv.addObject("username", username);
+                return modelAndView(mv, request, response);
+            }
         }
         model.addAttribute("errmsg", status.getErrorMessage());
         mv = new ModelAndView("redirect:/login");
-        return modelAndView(mv, request, response); }
+        mv.addObject("errmsg", status.getErrorMessage());
+        return modelAndView(mv, request, response);
+    }
 
     @PrivilegeSupport(support=false)
     @RequestMapping({"/dashboard"})
@@ -115,7 +119,7 @@ public class HomeController extends BaseController {
     @NoAuthoring
     public String changepwdGet(Model model, HttpServletRequest request, HttpServletResponse response)
     {
-        SysUser sysUser = WebUtil.getCurrentUser();
+        SysUser sysUser = WebUtil.getCurrentUserByCode();
         if (sysUser != null) {
             model.addAttribute("Name", sysUser.getUsername());
         }

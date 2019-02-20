@@ -3,7 +3,6 @@ package org.spring.springboot.consumer;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.spring.springboot.domain.PagerQuery;
 import org.spring.springboot.domain.SysUser;
 import org.spring.springboot.dubbo.SysUserService;
@@ -110,5 +109,52 @@ public class SysUserController
             this.sysUserService.updateById(record);
         }
         return JsonResponseGenerator.success("添加成功!");
+    }
+
+    @RequestMapping(value={"delete"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    public ModelAndView deleteGet(Integer id, HttpServletRequest request, HttpServletResponse response) {
+        SysUser sysUser = this.sysUserService.selectByPrimaryKey(id);
+        ModelAndView mv = new ModelAndView("sysUser/delete");
+        mv.addObject("sysUser", sysUser);
+        return mv;
+    }
+    @ResponseBody
+    @RequestMapping(value={"delete"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    public Object deletePost(@RequestBody SysUser record, HttpServletRequest request, HttpServletResponse response) throws ParseException {
+        SysUser user = WebUtil.getCurrentUserByCode();
+            record.setIs_delete(true);
+            record.setIsActive("N");
+            record.setLastUpdatedBy(user.getId());
+            record.setLastUpdatedTime(new Date());
+            this.sysUserService.updateById(record);
+        return JsonResponseGenerator.success("删除成功!");
+    }
+
+    @RequestMapping(value={"create"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
+    public ModelAndView creatGet(Integer id, HttpServletRequest request, HttpServletResponse response) {
+        ModelAndView mv = new ModelAndView("sysUser/creat");
+        return mv;
+    }
+
+    @ResponseBody
+    @RequestMapping(value={"create"}, method={org.springframework.web.bind.annotation.RequestMethod.POST})
+    public Object createPost(@RequestBody SysUser record, HttpServletRequest request, HttpServletResponse response) throws ParseException {
+       /*校验登录名*/
+        int req=sysUserService.getByNameTotal(record.getUsername());
+        if(req==1){
+            return JsonResponseGenerator.fail("登录名称已存在，添加失败!");
+        }
+        SysUser user = WebUtil.getCurrentUserByCode();
+        record.setIs_delete(false);
+        record.setIsActive("Y");
+        record.setIsLocked("N");
+        record.setCreatedBy(user.getId());
+        record.setCreatedTime(new Date());
+        int result=this.sysUserService.insert(record);
+        if(result==1){
+            return JsonResponseGenerator.success("添加成功!");
+        }else {
+            return JsonResponseGenerator.fail("添加失败!");
+        }
     }
 }

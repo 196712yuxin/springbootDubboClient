@@ -8,7 +8,7 @@
     <meta name="keyword" content="slick, flat, dashboard, bootstrap, admin, template, theme, responsive, fluid, retina">
     <link rel="shortcut icon" href="javascript:;" type="image/png">
 
-    <title>wisdominfo</title>
+    <title>听雨轩</title>
    <th:block th:include="include/headerinclude.html::headerinclude"></th:block>
 
 </head>
@@ -41,10 +41,11 @@
                     <div class="col-sm-12">
                         <section class="panel">
                             <header class="panel-heading ">
-                                Row Details Table
+                                角色列表
                                 <span class="tools pull-right">
-                                    <a class="fa fa-repeat box-refresh" href="javascript:;"></a>
-                                    <a class="t-close fa fa-times" href="javascript:;"></a>
+                <!--                    <a class="fa fa-repeat box-refresh" href="javascript:;"></a>
+                                    <a class="t-close fa fa-times" href="javascript:;"></a>-->
+                                  <a class="btn add-btn btn-success" href="javascript:;" onclick="javascript:window.location.href='create';">添加</a>
                                 </span>
                             </header>
                             <table id="datatable" class="table data-table row-details-data-table" cellspacing="0" width="100%">
@@ -160,7 +161,7 @@
                 $(td).html('<td class="hidden-xs">'+
                     /*'<button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button>'+*/
                     '<button class="btn btn-primary btn-xs" onclick="javascript:window.location.href=\'edit?id='+ rowData.id+'\';"><i class="fa fa-pencil"></i></button> '+
-                    '<button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>'+
+                    '<button class="btn btn-danger btn-xs"  onclick="javascript:window.location.href=\'delete?id='+ rowData.id+'\';"><i class="fa fa-trash-o "></i></button>'+
                     '</td>');
             },
             "orderable":false,
